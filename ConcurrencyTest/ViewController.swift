@@ -16,21 +16,37 @@ class ViewController: UIViewController {
          let mainQueue = OperationQueue.main
          Mas isso não irá parar o travamento da UI do Date Picker!
          */
-        
+        enablePrimeButton(false)
         let queue = OperationQueue()
-//        let operation = CalculatePrimeOperation()
+// Para rodar a concorrência em uma classe em um novo arquivo!
+// let operation = CalculatePrimeOperation()
         queue.addOperation {
-            for number in 0 ... 100_000_000 {
+            for number in 0 ... 100_000 {
                 let isPrimeNumber = self.isPrime(number: number)
                 print("\(number) is prime: \(isPrimeNumber  )")
             }
+           
+            OperationQueue.main.addOperation {
+                self.enablePrimeButton(true)
+            }
         }
+        
+        
         
         
     }
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+    }
+    
+    func enablePrimeButton(_ isEnabled: Bool) {
+       prime.isEnabled = isEnabled
+        if isEnabled {
+            prime.setTitle("Calculate Prime Numbers", for: .normal)
+        } else {
+            prime.setTitle("Calculating...", for: .normal)
+        }
     }
     
     func isPrime(number: Int) -> Bool {
